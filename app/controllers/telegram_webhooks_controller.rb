@@ -6,6 +6,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   context_to_action!
 
+  def help(*)
+    respond_with :message, text: t('.content')
+  end
+
   def pic(*args)
     source = search_pic(args)
     return fuckup if source.nil?
@@ -21,6 +25,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def message(message)
     # respond_with :message, text: t('.content', text: message['text'])
   end
+
+  def edited_message(message);end
 
   def action_missing(action, *_args)
     if command?
