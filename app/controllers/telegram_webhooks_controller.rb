@@ -18,9 +18,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     respond_with :audio, audio: song, performer: @artist, title: @track
   end
 
-  # def message(message)
-  #   respond_with :message, text: t('.content', text: message['text'])
-  # end
+  def message(message)
+    # respond_with :message, text: t('.content', text: message['text'])
+  end
 
   def action_missing(action, *_args)
     if command?
