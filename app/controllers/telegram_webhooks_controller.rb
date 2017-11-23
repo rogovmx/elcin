@@ -10,7 +10,13 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     respond_with :message, text: t('.content')
   end
 
+  def test(message)
+    aaa = TelegramWebhooks.tests(message)
+    respond_with :message, text: t('.content', text: aaa)
+  end
+
   def pic(*args)
+    Elcin.create!(zapros: args)
     source = search_pic(args)
     return fuckup if source.nil?
     respond_with :message, text: source
@@ -23,7 +29,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def message(message)
-    # respond_with :message, text: t('.content', text: message['text'])
+    pic(Elcin.last.zapros) if message["text"] == "еще"
   end
 
   def edited_message(message);end
