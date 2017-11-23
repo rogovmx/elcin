@@ -2,7 +2,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   context_to_action!
 
-  before_action :new_elcin, only: %i[test pic mus]
+  before_action :new_elcin, only: %i[test pic mus message]
 
   def help(*)
     respond_with :message, text: t('.content')
@@ -14,9 +14,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def pic(*args)
+    Elcin.create!(zapros: args)
     source = @elcin.search_pic(args)
     return fuckup if source.nil?
-    Elcin.create!(zapros: args)
     respond_with :message, text: source
   end
 
@@ -27,10 +27,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def message(message)
-    if message["text"] == "еще"
-      source = @elcin.search_pic(Elcin.last.zapros)
-      respond_with :message, text: source
-    end
+    pic(Elcin.last.zapros) if message["text"] == "еще"
   end
 
   def edited_message(message);end
