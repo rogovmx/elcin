@@ -40,6 +40,10 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem 'debbie', '~> 2.0.0'
+gem 'reform', '2.2.4'
+gem 'trailblazer', '>= 2.0.4'
+gem 'trailblazer-compat'
+gem 'trailblazer-rails', '>= 1.0.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

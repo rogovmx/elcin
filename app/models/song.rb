@@ -1,24 +1,10 @@
-class Message < ApplicationRecord
+class Song < ApplicationRecord
   require 'open-uri'
   require 'net/http'
   require 'uri'
   require 'nokogiri'
 
   class << self
-    def yandex_pic(zapros)
-      url = "https://yandex.ru/images/search?text=#{zapros.join('-')}&isize=medium&itype=jpg"
-      stroka = URI.encode(url)
-      html = Net::HTTP.get(URI.parse(stroka))
-      URI.extract(html).select { |l| l[/\.(?:jpe?g)\b/] }
-    end
-
-    def bing_pic(zapros)
-      url = "https://www.bing.com/images/search?q=#{zapros.join('+')}&go=Поиск"
-      stroka = URI.encode(url)
-      html = Net::HTTP.get(URI.parse(stroka))
-      URI.extract(html).select { |l| l[/\.(?:jpe?g)\b/] }
-    end
-
     def get_audio(poisk)
       zapros = poisk.downcase.gsub(/[!?.,"\/\\]/, ' ').split(' ')
       url = ("https://mp3poisk.info/s/#{zapros.join('-')}")
@@ -45,14 +31,17 @@ class Message < ApplicationRecord
       @artist = doc.css('.hide')[1].css('.artist')[0].text
       @track = doc.css('.hide')[1].css('.track')[0].text
 
-      if !File.exist?("public/songs/#{title}")
+      song = Song.find_by(filename: title)
+
+      if !song
         File.open("public/songs/#{title}", "wb") do |saved_file|
           open(href, "rb") do |read_file|
             saved_file.write(read_file.read)
           end
         end
+        song = Song.create!(author: @artist.downcase, track: @track.downcase, filename: title.downcase, href: href)
       end
-      File.open("public/songs/#{title}")
+      song
     end
   end
 end

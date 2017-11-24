@@ -10,15 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171123083200) do
+ActiveRecord::Schema.define(version: 20171124120707) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "elcins", force: :cascade do |t|
-    t.string   "zapros"
+  create_table "messages", force: :cascade do |t|
+    t.string   "zapros",     null: false
+    t.string   "href",       null: false
+    t.jsonb    "data",       null: false
+    t.integer  "user_id"
+    t.integer  "chat_id"
+    t.string   "username"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "songs", force: :cascade do |t|
+    t.string "author",   null: false
+    t.string "track",    null: false
+    t.string "href",     null: false
+    t.string "filename", null: false
   end
 
 end

@@ -2,28 +2,44 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   context_to_action!
 
-  before_action :new_elcin, only: %i[test pic mus message]
-
   def help(*)
     respond_with :message, text: t('.content')
   end
 
-  def test(message)
-    aaa = @elcin.tests(message)
-    respond_with :message, text: aaa
-  end
-
   def pic(*args)
-    Elcin.create!(zapros: args.join(' '))
-    source = @elcin.search_pic(args)
-    return fuckup if source.nil?
-    respond_with :message, text: source
+    params = update
+    params[:args] = args
+    result = Picture::Search.call(params)
+    if result.success?
+      return respond_with :message, text: result["model"].href
+    end
+    fuckup
   end
 
   def mus(*args)
-    song = @elcin.get_audio(args.join(' '))
+    song = Song.get_audio(args.join(' '))
     return fuckup if song.nil?
-    respond_with :audio, audio: song, performer: @artist, title: @track
+    respond_with :audio, audio: File.open("public/songs/#{song.filename}"),
+                         caption: "#{song.author} - #{song.track}",
+                         performer: song.author,
+                         title: song.track
+  end
+
+  def art(*args)
+    artists = Song.where(author: args.join(' ').downcase).map{ |a| [{text: a.track, callback_data: a.id}] }
+    respond_with :message, text: args.join(' ').capitalize, reply_markup: {
+      inline_keyboard: artists,
+      one_time_keyboard: true,
+      selective: true,
+    }
+  end
+
+  def callback_query(data)
+    song = Song.find(data)
+    respond_with :audio, audio: File.open("public/songs/#{song.filename}"),
+                         caption: "#{song.author} - #{song.track}",
+                         performer: song.author,
+                         title: song.track
   end
 
   def message(message)
@@ -44,9 +60,5 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def fuckup
     respond_with :message, text: 'Сорян, бро, ничего нет!'
-  end
-
-  def new_elcin
-    @elcin = Elcin.new
   end
 end
