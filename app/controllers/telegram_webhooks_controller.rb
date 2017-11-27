@@ -29,7 +29,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     respond_with :message, text: args.join(' ').capitalize, reply_markup: {
       inline_keyboard: artists,
       one_time_keyboard: true,
-      selective: true
+      selective: true,
     }
   end
 
@@ -38,7 +38,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     respond_with :message, text: 'Исполнители:', reply_markup: {
       inline_keyboard: artists,
       one_time_keyboard: true,
-      selective: true
+      selective: true,
     }
   end
 
@@ -67,7 +67,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     )
   end
 
-  def edited_message(message); end
+  def edited_message(message);end
 
   def action_missing(action, *_args)
     if command?
@@ -79,8 +79,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def cool(message)
     chat = -1001102168560
-    bot.send_message(chat_id: chat, text: 'Ебать ту Люсю!')
-    # respond_with :message, chat_id: chat, text: 'ok'
+    bot.send_message(chat_id: chat, text: message['text'])
   end
 
   private
