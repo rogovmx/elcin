@@ -36,7 +36,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def art(*)
     artists = Song.select(:author).uniq.map{ |a| [{text: a.author, callback_data: a.author}] }
-    respond_with :message, text: args.join(' ').capitalize, reply_markup: {
+    respond_with :message, text: "Исполнители:", reply_markup: {
       inline_keyboard: artists,
       one_time_keyboard: true,
       selective: true,
