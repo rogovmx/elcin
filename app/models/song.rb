@@ -6,18 +6,20 @@ class Song < ApplicationRecord
 
   class << self
     def get_audio(poisk)
-      zapros = poisk.downcase.gsub(/[!?.,"\/\\]/, ' ').split(' ')
+      zapros = poisk.downcase
+                    .gsub(/[!?.,"\/\\]/, ' ')
+                    .split(' ')
+                    .each { |w| zapros.delete(w) if w.length == 1 }
+
       url = ("https://mp3poisk.info/s/#{zapros.join('-')}")
 
       stroka = URI.encode(url)
       html = Net::HTTP.get(URI.parse(stroka))
       doc = Nokogiri::HTML(html)
 
-      if doc.css('.dl').nil? && doc.css('.dl')[1]['href'].empty? && doc.css('.dl')[2]['href'].empty?
-        return nil
-      end
+      return nil if doc.css('ul.songsListen li.item div.itemCenter div.desc a')[0]['href'].nil?
 
-      href = doc.css('.dl')[2]['href'] || doc.css('.dl')[1]['href']
+      href = doc.css('ul.songsListen li.item div.itemCenter div.desc a')[0]['href']
 
       stroka = URI.encode(href)
       html = Net::HTTP.get(URI.parse(stroka))
