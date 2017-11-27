@@ -77,9 +77,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     end
   end
 
-  def cool(message)
+  def cool(*args)
     chat = -1001102168560
-    bot.send_message(chat_id: chat, text: message['text'])
+    bot.send_message(chat_id: chat, text: args.join(' ')
   end
 
   private
