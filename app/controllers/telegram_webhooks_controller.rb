@@ -44,8 +44,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def callback_query(data)
-    return songs(data) if data.class == String
     song = Song.find(data)
+    return songs(data) if song.nil?
     respond_with :audio, audio: File.open("public/songs/#{song.filename}"),
                          caption: "#{song.author} - #{song.track}",
                          performer: song.author,
