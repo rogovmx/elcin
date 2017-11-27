@@ -10,7 +10,7 @@ module Picture::Steps
         search: params[:args],
         data: params["message"],
         user_id: params["message"]["from"]["id"],
-        chat_id: params["message"]["chat"]["id"],
+        chat_id: " ",
         username: params["message"]["from"]["username"],
         first_name: params["message"]["from"]["first_name"],
         last_name: params["message"]["from"]["last_name"],
