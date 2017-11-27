@@ -8,7 +8,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def pic(*args)
     image = Message.get_pic(args)
-    return respond_with :message, text: image if !image.nil?
+    return respond_with :message, text: image unless image.nil?
     fuckup
   end
 
