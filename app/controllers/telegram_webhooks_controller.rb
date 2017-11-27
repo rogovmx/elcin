@@ -78,8 +78,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def cool(message)
-    chat = 1001102168560
-    respond_with :message, chat_id: chat, text: 'ok'
+    chat = -1001102168560
+    bot.send_message(chat_id: chat, text: 'Ебать ту Люсю!')
+    # respond_with :message, chat_id: chat, text: 'ok'
   end
 
   private
