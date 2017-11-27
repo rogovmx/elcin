@@ -5,6 +5,13 @@ class Message < ApplicationRecord
   require 'nokogiri'
 
   class << self
+    def get_pic(zapros)
+      images = Message.yandex_pic(zapros)
+      images = Message.bing_pic(zapros) if images.size.zero?
+
+      image = images.size > 1 ? images[rand(0..images.size)] : nil
+    end
+
     def yandex_pic(zapros)
       url = "https://yandex.ru/images/search?text=#{zapros.join('-')}&isize=medium&itype=jpg"
       stroka = URI.encode(url)

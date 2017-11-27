@@ -7,10 +7,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def pic(*args)
-    params = update
-    params[:args] = args
-    result = Picture::Search.call(params)
-    return respond_with :message, text: result['model'].href if result.success?
+    image = Message.get_pic(args)
+    return respond_with :message, text: image if !image.nil?
     fuckup
   end
 
