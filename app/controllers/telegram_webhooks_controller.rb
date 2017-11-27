@@ -78,9 +78,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def cool(message)
-    if message['text'] == 'ok'
-      respond_with :message, chat_id: -1001102168560, text: 'ok'
-    end
+    chat = -1001102168560
+    respond_with :message, chat_id: chat, text: 'ok'
   end
 
   private
