@@ -6,10 +6,8 @@ class Song < ApplicationRecord
 
   class << self
     def get_audio(poisk)
-      zapros = poisk.downcase
-                    .gsub(/[!?.,"\/\\]/, ' ')
-                    .split(' ')
-                    .each { |w| zapros.delete(w) if w.length == 1 }
+      zapros = poisk.downcase.gsub(/[!?.,"\/\\]/, ' ').split(' ')
+      zapros.each { |w| zapros.delete(w) if w.length == 1 }
 
       url = ("https://mp3poisk.info/s/#{zapros.join('-')}")
 
