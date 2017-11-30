@@ -51,18 +51,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def message(message)
-    return pic(Elcin.last.zapros.split(' ')) if message['text'] == 'еще'
-    Message.create!(
-      zapros: ' ',
-      href: ' ',
-      data: update['message'],
-      user_id: ' ',
-      chat_id: ' ',
-      username: update['message']['from']['username'],
-      first_name: update['message']['from']['first_name'],
-      last_name: update['message']['from']['last_name'],
-      text: update['message']['text']
-    )
+    return pic(Message.last.zapros.split(' ')) if message['text'] == 'еще'
   end
 
   def edited_message(message);end
