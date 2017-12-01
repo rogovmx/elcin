@@ -8,6 +8,13 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
             гнида сука скотина скотобаза мудараст хуепутало].freeze
   FUCK_LIKE = %w[обоссаный бухой тупой уродливый ебучий калечный конченый].freeze
 
+  GOOD = %w[нормальный хороший умный отличный классный поумнел вписывается подходит шарит
+            врубается крутой клевый сечет норм крут четкий].freeze
+
+  GOOD_REPL = ['слышу голос разума', 'спасибо дружище', 'хоть кто-то тут нормальный',
+               'а я в тебе уже сомневаться начал', 'наконец-то вы это поняли', 'ты тоже норм',
+               'а ты думал', 'я нормальнее многих в этом чате'].freeze
+
   FUCK_REPLY = ['Слыш', 'Эй', 'Эй ты', 'Детка', 'Эээ', 'Знаешь', 'Слышишь',
                 'Я че сказать хочу'].freeze
 
@@ -104,6 +111,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       otvet2 = "#{COMANDS_REPL[rand(0..COMANDS_REPL.size-1)].capitalize}."
       otvets = [otvet, otvet2]
       respond_with :message, text: otvets[rand(0..1)]
+    elsif (words & GOOD).size.nonzero?
+      otvet = "#{GOOD_REPL[rand(0..GOOD_REPL.size-1)].capitalize}."
+      respond_with :message, text: otvet
     end
   end
 end
