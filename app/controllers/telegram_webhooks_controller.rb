@@ -2,6 +2,17 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   context_to_action!
 
+  NAMES = %w[бн борис борька николаевич беня борян бюря ельцин].freeze
+  FUCK = %w[козлина долбоеб мудак уебок дебил идиот кретин казлина падла колдырь уебан придурок
+            дурак дятел долбоящер долбоклюй алкаш алкоголик жопа жопонюх хуеплет хуй хуйня козел
+            гнида сука скотина скотобаза мудараст хуепутало].freeze
+  FUCK_LIKE = %w[обоссаный бухой тупой уродливый ебучий калечный конченый].freeze
+
+  FUCK_REPLY = ['Слыш', 'Эй', 'Эй ты', 'Детка', 'Эээ', 'Знаешь', 'Слышишь',
+                'Я че сказать хочу'].freeze
+  FUCK_DIR = ['иди ты', 'пошел', 'иди', 'держи путь', 'отправляйся ты', 'пиздуй', 'уебывай'].freeze
+  FUCK_TO = ['на хуй', 'в жопу', 'в пизду'].freeze
+
   def help(*)
     respond_with :message, text: t('.content')
   end
@@ -52,6 +63,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def message(message)
     return pic(Message.last.zapros.split(' ')) if message['text'] == 'еще'
+    words = message['text'].downcase.gsub(/[!?.,"\/\\]/, ' ').split(' ')
+    if (words & NAMES).size.nonzero?
+      govorilka(words)
+    end
   end
 
   def edited_message(message);end
@@ -73,5 +88,12 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def fuckup
     respond_with :message, text: 'Сорян, бро, ничего нет!'
+  end
+
+  def govorilka(words)
+    if (words & FUCK).size.nonzero? || (words & FUCK_LIKE).size.nonzero?
+      otvet = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{FUCK[rand(0..FUCK.size-1)]} #{FUCK_LIKE[rand(0..FUCK_LIKE.size-1)]}, #{FUCK_DIR[rand(0..FUCK_DIR.size-1)]} #{FUCK_TO[rand(0..FUCK_TO.size-1)]}, #{FUCK[rand(0..FUCK.size-1)]} #{FUCK_LIKE[rand(0..FUCK_LIKE.size-1)]}!"
+      respond_with :message, text: otvet
+    end
   end
 end
