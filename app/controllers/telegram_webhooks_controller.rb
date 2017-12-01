@@ -2,7 +2,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   context_to_action!
 
-  NAMES = %w[бн борис борька николаевич беня борян бюря ельцин].freeze
+  NAMES = %w[бн борис борька николаевич беня борян бюря ельцин борюсик].freeze
   FUCK = %w[козлина долбоеб мудак уебок дебил идиот кретин казлина падла колдырь уебан придурок
             дурак дятел долбоящер долбоклюй алкаш алкоголик жопа жопонюх хуеплет хуй хуйня козел
             гнида сука скотина скотобаза мудараст хуепутало].freeze
@@ -10,6 +10,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   FUCK_REPLY = ['Слыш', 'Эй', 'Эй ты', 'Детка', 'Эээ', 'Знаешь', 'Слышишь',
                 'Я че сказать хочу'].freeze
+
+  COMANDS = %w[найди скинь ищи скачай нагугли пришли].freeze
+  COMANDS_REPL = ['сам ищи', 'делать мне нехуй', 'не буду', 'учи команды', 'я тебе не поисковик',
+                  'нашли дурака', 'ебал я в рот такие приколы', 'я лучше посплю'].freeze
+
   FUCK_DIR = ['иди ты', 'пошел', 'иди', 'держи путь', 'отправляйся ты', 'пиздуй', 'уебывай'].freeze
   FUCK_TO = ['на хуй', 'в жопу', 'в пизду'].freeze
 
@@ -94,6 +99,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     if (words & FUCK).size.nonzero? || (words & FUCK_LIKE).size.nonzero?
       otvet = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{FUCK[rand(0..FUCK.size-1)]} #{FUCK_LIKE[rand(0..FUCK_LIKE.size-1)]}, #{FUCK_DIR[rand(0..FUCK_DIR.size-1)]} #{FUCK_TO[rand(0..FUCK_TO.size-1)]}, #{FUCK[rand(0..FUCK.size-1)]} #{FUCK_LIKE[rand(0..FUCK_LIKE.size-1)]}!"
       respond_with :message, text: otvet
+    elsif (words & COMANDS).size.nonzero?
+      otvet = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{COMANDS_REPL[rand(0..COMANDS_REPL.size-1)]}."
+      otvet2 = "#{COMANDS_REPL[rand(0..COMANDS_REPL.size-1)].capitalize}."
+      otvets = [otvet, otvet2]
+      respond_with :message, text: otvets[rand(0..1)]
     end
   end
 end
