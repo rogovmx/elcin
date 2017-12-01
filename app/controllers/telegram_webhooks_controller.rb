@@ -103,6 +103,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def govorilka(words)
+    sleep 3
     if (words & FUCK).size.nonzero? || (words & FUCK_LIKE).size.nonzero?
       otvet = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{FUCK[rand(0..FUCK.size-1)]} #{FUCK_LIKE[rand(0..FUCK_LIKE.size-1)]}, #{FUCK_DIR[rand(0..FUCK_DIR.size-1)]} #{FUCK_TO[rand(0..FUCK_TO.size-1)]}, #{FUCK[rand(0..FUCK.size-1)]} #{FUCK_LIKE[rand(0..FUCK_LIKE.size-1)]}!"
       respond_with :message, text: otvet
