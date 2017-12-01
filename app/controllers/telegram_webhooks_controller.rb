@@ -3,10 +3,14 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   context_to_action!
 
   NAMES = %w[бн борис борька николаевич беня борян бюря ельцин борюсик].freeze
-  FUCK = %w[козлина долбоеб мудак уебок дебил идиот кретин казлина падла колдырь уебан придурок
-            дурак дятел долбоящер долбоклюй алкаш алкоголик жопа жопонюх хуеплет хуй хуйня козел
-            гнида сука скотина скотобаза мудараст хуепутало].freeze
+  FUCK = %w[козлина долбоеб мудак уебок дебил идиот кретин казлина колдырь уебан придурок
+            дурак дятел долбоящер долбоклюй алкаш алкоголик жопонюх хуеплет хуй козел
+            гандон мудараст хуепутало пиздолиз].freeze
+  FUCK2 = %w[хуйня пидовка жопа сука скотина скотобаза срань пиздень педовка срань слякоть
+             слизь сосалка блядина гнида].freeze
+
   FUCK_LIKE = %w[обоссаный бухой тупой уродливый ебучий калечный конченый].freeze
+  FUCK_LIKE2 = %w[обоссаная бухая тупая уродливая ебучая калечная конченая].freeze
 
   GOOD = %w[нормальный хороший умный отличный классный поумнел вписывается подходит шарит
             врубается крутой клевый сечет норм крут четкий].freeze
@@ -104,9 +108,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def govorilka(words)
     sleep 3
-    if (words & FUCK).size.nonzero? || (words & FUCK_LIKE).size.nonzero?
+    if (words & FUCK).size.nonzero? || (words & FUCK2).size.nonzero? || (words & FUCK_LIKE).size.nonzero? || (words & FUCK_LIKE2).size.nonzero?
       otvet = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{FUCK[rand(0..FUCK.size-1)]} #{FUCK_LIKE[rand(0..FUCK_LIKE.size-1)]}, #{FUCK_DIR[rand(0..FUCK_DIR.size-1)]} #{FUCK_TO[rand(0..FUCK_TO.size-1)]}, #{FUCK[rand(0..FUCK.size-1)]} #{FUCK_LIKE[rand(0..FUCK_LIKE.size-1)]}!"
-      respond_with :message, text: otvet
+      otvet2 = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{FUCK2[rand(0..FUCK2.size-1)]} #{FUCK_LIKE2[rand(0..FUCK_LIKE2.size-1)]}, #{FUCK_DIR[rand(0..FUCK_DIR.size-1)]} #{FUCK_TO[rand(0..FUCK_TO.size-1)]}, #{FUCK2[rand(0..FUCK2.size-1)]} #{FUCK_LIKE2[rand(0..FUCK_LIKE2.size-1)]}!"
+      otvets = [otvet, otvet2]
+      respond_with :message, text: otvets[rand(0..1)]
     elsif (words & COMANDS).size.nonzero?
       otvet = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{COMANDS_REPL[rand(0..COMANDS_REPL.size-1)]}."
       otvet2 = "#{COMANDS_REPL[rand(0..COMANDS_REPL.size-1)].capitalize}."
