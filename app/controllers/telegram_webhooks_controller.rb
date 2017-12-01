@@ -9,8 +9,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   FUCK2 = %w[хуйня пидовка жопа сука скотина скотобаза срань пиздень педовка срань слякоть
              слизь сосалка блядина гнида].freeze
 
-  FUCK_LIKE = %w[обоссаный бухой тупой уродливый ебучий калечный конченый].freeze
-  FUCK_LIKE2 = %w[обоссаная бухая тупая уродливая ебучая калечная конченая].freeze
+  FUCK_LIKE = %w[обоссаный бухой тупой уродливый ебучий калечный конченый ссаный].freeze
+  FUCK_LIKE2 = %w[обоссаная бухая тупая уродливая ебучая калечная конченая ссаная].freeze
 
   GOOD = %w[нормальный хороший умный отличный классный поумнел вписывается подходит шарит
             врубается крутой клевый сечет норм крут четкий].freeze
@@ -21,6 +21,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   FUCK_REPLY = ['Слыш', 'Эй', 'Эй ты', 'Детка', 'Эээ', 'Знаешь', 'Слышишь',
                 'Я че сказать хочу'].freeze
+
+  FUCK_REPLY2 = ['Сам ты', 'От', 'Эй ты', 'Детка', 'Эээ', 'Знаешь', 'Слышишь',
+  'Я че сказать хочу'].freeze
 
   COMANDS = %w[найди скинь ищи скачай нагугли пришли].freeze
   COMANDS_REPL = ['сам ищи', 'делать мне нехуй', 'не буду', 'учи команды', 'я тебе не поисковик',
@@ -82,6 +85,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     return pic(Message.last.zapros.split(' ')) if message['text'] == 'еще'
     words = message['text'].downcase.gsub(/[!?.,"\/\\]/, ' ').split(' ')
     if (words & NAMES).size.nonzero?
+      (words & NAMES).map { |w| words.delete(w) }
       govorilka(words)
     end
   end
@@ -108,12 +112,18 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def govorilka(words)
-    sleep 3
+    sleep 2
     if (words & FUCK).size.nonzero? || (words & FUCK2).size.nonzero? || (words & FUCK_LIKE).size.nonzero? || (words & FUCK_LIKE2).size.nonzero?
+      fuck = words & FUCK if (words & FUCK).size.nonzero?
+      fuck_like = words & FUCK_LIKE if (words & FUCK_LIKE).size.nonzero?
+      fuck2 = words & FUCK2 if (words & FUCK2).size.nonzero?
+      fuck_like2 = words & FUCK_LIKE2 if (words & FUCK_LIKE2).size.nonzero?
       otvet = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{FUCK[rand(0..FUCK.size-1)]} #{FUCK_LIKE[rand(0..FUCK_LIKE.size-1)]}, #{FUCK_DIR[rand(0..FUCK_DIR.size-1)]} #{FUCK_TO[rand(0..FUCK_TO.size-1)]}, #{FUCK[rand(0..FUCK.size-1)]} #{FUCK_LIKE[rand(0..FUCK_LIKE.size-1)]}!"
       otvet2 = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{FUCK2[rand(0..FUCK2.size-1)]} #{FUCK_LIKE2[rand(0..FUCK_LIKE2.size-1)]}, #{FUCK_DIR[rand(0..FUCK_DIR.size-1)]} #{FUCK_TO[rand(0..FUCK_TO.size-1)]}, #{FUCK2[rand(0..FUCK2.size-1)]} #{FUCK_LIKE2[rand(0..FUCK_LIKE2.size-1)]}!"
-      otvets = [otvet, otvet2]
-      respond_with :message, text: otvets[rand(0..1)]
+      otvet3 = "Сам ты #{fuck_like&.join(', ')} #{fuck&.join(', ')}!" if (words & FUCK_LIKE).size.nonzero?
+      otvet4 = "Сам ты #{fuck_like2&.join(', ')} #{fuck2&.join(', ')}!" if (words & FUCK_LIKE2).size.nonzero?
+      otvets = [otvet, otvet2, otvet3, otvet4]
+      respond_with :message, text: otvets[rand(0..otvets.compact.size-1)]
     elsif (words & COMANDS).size.nonzero?
       otvet = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{COMANDS_REPL[rand(0..COMANDS_REPL.size-1)]}."
       otvet2 = "#{COMANDS_REPL[rand(0..COMANDS_REPL.size-1)].capitalize}."
