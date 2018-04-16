@@ -25,12 +25,37 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   FUCK_REPLY2 = ['Сам ты', 'От', 'Эй ты', 'Детка', 'Эээ', 'Знаешь', 'Слышишь',
   'Я че сказать хочу'].freeze
 
-  COMANDS = %w[найди скинь ищи скачай нагугли пришли].freeze
-  COMANDS_REPL = ['сам ищи', 'делать мне нехуй', 'не буду', 'учи команды', 'я тебе не поисковик',
-                  'нашли дурака', 'ебал я в рот такие приколы', 'я лучше посплю'].freeze
+  COMANDS = %w[найди скинь ищи скачай нагугли пришли покажи].freeze
+  COMANDS_REPL = ['сам ищи', 'делать мне нечего', 'не буду', 'учи команды', 'я тебе не поисковик',
+                  'нашли дурака', 'тарахтел я такие приколы', 'я лучше посплю'].freeze
+
+  COMANDS2 = %w[поделись одари].freeze
+  MUDROST = %w[цитатой мудростью].freeze
+
+  COMANDS3 = %w[скажи напиши пришли скинь].freeze
+  MUDROST2 = %w[цитату мудрость фразу].freeze
 
   FUCK_DIR = ['иди ты', 'пошел', 'иди', 'держи путь', 'отправляйся ты', 'пиздуй', 'уебывай'].freeze
   FUCK_TO = ['на хуй', 'в жопу', 'в пизду'].freeze
+
+  QUOTES = ['Денег мало, а любить людей нужно много.',
+            'Возраст политика – 65 лет, а после этого он впадает в маразм.',
+            'Просыпаясь утром, я спрашиваю себя: что ты сделал для Украины?',
+            'Разве российский шоколад хуже импортного? А пиво? О водке я не говорю.',
+            'Я тоже дедушка: у меня три внука. Ой, что это я, у меня четыре внука. Совсем заездился.',
+            'Рожаете вы плохо. Я понимаю, сейчас трудно рожать, но все-таки надо постепенно поднатужиться.',
+            'Виктор Степанович Черномырдин большую жизнь прожил, побывал и сверху, и снизу, и снизу, и сверху.',
+            'Мы, конечно, все что можно со своей стороны делаем, но не все мы можем. То есть мы можем, но совесть нам не позволяет.',
+            'Я бросил монетку в Енисей, на счастье. Но не думайте, что на этом финансовая поддержка вашего края со стороны президента закончена.',
+            'Хорошая водичка Нарзан, вкусная. Вкусная и полезная. Но лечить мне нечего, у меня все в порядке. Но для профилактики, для омоложения - мне надо об омоложении думать. Все-таки уже 71 год',
+            'Ну посмотрите, России просто не везет. Петр I не закончил реформу, Екатерина II не закончила реформу, Александр II не закончил реформу, Столыпин не закончил реформу. Я должен закончить реформу.',
+            'Наша страна стоит на краю пропасти, но благодаря Президенту мы сделаем шаг вперед!',
+            'Вот берёшь нашу картошку в руки… А она вся такая… Рассыпчатая',
+            'Как тот такой же, так и этот, понимаешь. Два генерала... ',
+            'Мы с Колем встречались трижды. Вот такая мужская любовь.',
+            'Пятьдесят наименований микроэлементов в одной корове, вот поэтому она и даёт.',
+            'Самое главное, чтобы у меня чемоданчик мой не свистнули.',
+            'У меня давление всегда нормальное, 120 на 80. Хоть ночью меня разбуди, хоть во время заседания, хоть во время стресса — всегда 120 на 80.'].freeze
 
   def help(*)
     respond_with :message, text: t('.content')
@@ -83,10 +108,12 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def message(message)
     return pic(Message.last.zapros.split(' ')) if message['text'] == 'еще'
-    words = message['text'].downcase.gsub(/[!?.,"\/\\]/, ' ').split(' ')
-    if (words & NAMES).size.nonzero?
-      (words & NAMES).map { |w| words.delete(w) }
-      govorilka(words)
+    words = message['text']&.downcase&.gsub(/[!?.,"\/\\]/, ' ')&.split(' ')
+    unless words.nil?
+      unless (words & NAMES).empty?
+        (words & NAMES).map { |w| words.delete(w) }
+        govorilka(words)
+      end
     end
   end
 
@@ -124,6 +151,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       otvet4 = "Сам ты #{fuck_like2&.join(', ')} #{fuck2&.join(', ')}!" if (words & FUCK_LIKE2).size.nonzero?
       otvets = [otvet, otvet2, otvet3, otvet4]
       respond_with :message, text: otvets[rand(0..otvets.compact.size-1)]
+    elsif (words & COMANDS2).size.nonzero? && (words & MUDROST).size.nonzero? || (words & COMANDS3).size.nonzero? && (words & MUDROST2).size.nonzero?
+      respond_with :message, text: QUOTES[rand(0..QUOTES.size-1)]
     elsif (words & COMANDS).size.nonzero?
       otvet = "#{FUCK_REPLY[rand(0..FUCK_REPLY.size-1)]}, #{COMANDS_REPL[rand(0..COMANDS_REPL.size-1)]}."
       otvet2 = "#{COMANDS_REPL[rand(0..COMANDS_REPL.size-1)].capitalize}."
