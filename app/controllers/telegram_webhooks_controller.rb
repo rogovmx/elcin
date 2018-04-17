@@ -121,9 +121,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     words = message['text']&.downcase&.gsub(/[!?.,"\/\\]/, ' ')&.split(' ')
     unless words.nil?
       unless (words & ['сверло', 'сверла', 'сверла', 'сверел', 'сверлом', 'сверл']).empty?
+        sleep 5
         respond_with :message, text: SVERLO[rand(0..(SVERLO.size-1))]
       end
       unless (words & ['плинтус', 'плинтуса', 'плинсусом', 'плинтусами', 'плинтусов']).empty?
+        sleep 5
         respond_with :message, text: PLINTUS[rand(0..(PLINTUS.size-1))]
       end
       unless (words & NAMES).empty?
