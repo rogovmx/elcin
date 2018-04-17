@@ -57,6 +57,16 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
             'Самое главное, чтобы у меня чемоданчик мой не свистнули.',
             'У меня давление всегда нормальное, 120 на 80. Хоть ночью меня разбуди, хоть во время заседания, хоть во время стресса — всегда 120 на 80.'].freeze
 
+  PLINTUS = ['Нельзя просто так взять и присверлить плинтус, точнее можно, но не просто так!',
+             'Да кому нужны плинтуса сегодня? Все это глупости.',
+             'Как-то приходит ко мне на совещание Черномырдин, а у него из кормана плинтус торчит.',
+             'Наина, бывало, как скажет: Боря, твою медь, прибей уже этот сраный плинтус!'].freeze
+  SVERLO =  ['Я, когда был молодым, имел до 15-и сверел в наборе.',
+             'Бывало, купишь сверло, бежишь домой, пробовать сейчас будешь. Открываешь пакет, а оно(свело) хуяк, и гусь! Вот что с ним делать?',
+             'Я однажды высверлил вооооот такую розетку!',
+             'Если бы не сверла, я может быть и не женился бы никогда!',
+             'Советские сверла были самыми сверластыми. Гладкие уже все, а сверлят!',
+             'Бывало намотаешь БФ-а на свело и счастлив!'].freeze
   def help(*)
     respond_with :message, text: t('.content')
   end
@@ -110,6 +120,12 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     return pic(Message.last.zapros.split(' ')) if message['text'] == 'еще'
     words = message['text']&.downcase&.gsub(/[!?.,"\/\\]/, ' ')&.split(' ')
     unless words.nil?
+      unless (words & ['сверло', 'сверла', 'сверла', 'сверел', 'сверлом', 'сверл']).empty?
+        respond_with :message, text: SVERLO[rand(0..(SVERLO.size-1))]
+      end
+      unless (words & ['плинтус', 'плинтуса', 'плинсусом', 'плинтусами', 'плинтусов']).empty?
+        respond_with :message, text: PLINTUS[rand(0..(PLINTUS.size-1))]
+      end
       unless (words & NAMES).empty?
         (words & NAMES).map { |w| words.delete(w) }
         govorilka(words)
