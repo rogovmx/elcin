@@ -67,6 +67,21 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
              'Если бы не сверла, я может быть и не женился бы никогда!',
              'Советские сверла были самыми сверластыми. Гладкие уже все, а сверлят!',
              'Бывало намотаешь БФ-а на свело и счастлив!'].freeze
+  KOVI =    ['Сдулся ваш Ковальчук!', 'Ковальчук уже не торт.',
+             'Да кому он нужен, это ваш Ковальчук?',
+             'Когда-то он был звездой, то теперь уже старый.', 'Скрипит потертый Ковальчук...']
+  PIVO =    ['Здесь дух хмельной, здесь суслом пахнет.',
+             'Где ПИВО - там и Родина.',
+             'Пиво и водка в одном стакане - не дай себе замёрзнуть.',
+             'Безалкогольное пиво - первый шаг к резиновой женщине.',
+             'Пиво? теплое? с порошком? из целофанового пакета? утром? КОHЕЧHО БУДУ!!!',
+             'Пива любитель, крепи единство; долой нищету, безработицу, свинство!',
+             'Пиво есть - его не можно не пить',
+             'Большой живот не от Пива а для Пива',
+             'Круговорот воды в природе гарантирует: все, что мы пьем, уже когда-то пили.',
+             'Чем шире наши рожи - тем теснее наши ряды.',
+             'пиво не чай - водой не разбавляй',
+             'Hам пиво строить и жить помогает']
   def help(*)
     respond_with :message, text: t('.content')
   end
@@ -120,7 +135,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def message(message)
-    return pic(Message.last.zapros.split(' ')) if message['text'] == 'еще'
+    return pic(Message.last.zapros.split(' ')) if message['text'].downcase == 'еще'
     words = message['text']&.downcase&.gsub(/[!?.,"\/\\]/, ' ')&.split(' ')
     unless words.nil?
       unless (words & ['сверло', 'сверла', 'сверел', 'сверлом', 'сверл', 'сверлах', 'свёрла', 'свёрел', 'свёрл', 'свёрлах']).empty?
@@ -130,6 +145,14 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       unless (words & ['плинтус', 'плинтуса', 'плинтусом', 'плинтусами', 'плинтусов', 'плинтусах']).empty?
         sleep 5
         respond_with :message, text: PLINTUS[rand(0..(PLINTUS.size-1))]
+      end
+      unless (words & ['ковальчук', 'кови']).empty?
+        sleep 5
+        respond_with :message, text: KOVI[rand(0..(KOVI.size-1))]
+      end
+      unless (words & ['пиво', 'пива', 'пивом', 'пивасика', 'пивка', 'пивца', 'пиву']).empty?
+        sleep 5
+        respond_with :message, text: PIVO[rand(0..(PIVO.size-1))]
       end
       unless (words & NAMES).empty?
         (words & NAMES).map { |w| words.delete(w) }
