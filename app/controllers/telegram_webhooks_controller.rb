@@ -162,7 +162,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
         sleep rand(5..20)
         respond_with :message, text: PIVO[rand(0..(PIVO.size-1))]
       end
-      unless (words & ['кросовки', 'кеды', 'туфли', 'ботинки', 'сапоги', 'валенки', 'кросовок', 'кед', 'туфлей', 'ботинок', 'сапог', 'валенок']).empty?
+      unless (words & ['кроссовки', 'кроссы','кеды', 'туфли', 'ботинки', 'сапоги', 'валенки', 'кроссовок', 'кед', 'туфлей', 'ботинок', 'сапог', 'валенок']).empty?
         sleep rand(5..20)
         respond_with :message, text: SHOES[rand(0..(SHOES.size-1))]
       end
