@@ -110,8 +110,18 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def book(*args)
     books = Book.where("title ilike '%#{args.join(' ').strip.downcase}%'")
-                .map { |a| [{ text: "#{find_book_author(a.author_id)} - #{a.title.capitalize}", callback_data: a.filename }] }
+                .map { |a| [{ text: "**#{find_book_author(a.author_id)}** - #{a.title.capitalize}", callback_data: a.filename }] }
 
+    send_books(books)
+  end
+
+  def author(*args)
+    author = Author.where("search_name ilike '%#{args.join(' ').strip.downcase}%'").first
+    books = author.books.map { |a| [{ text: "**#{author.last_name.capitalize} #{author.first_name.capitalize} #{author.middle_name.capitalize}** - #{a.title.capitalize}", callback_data: a.filename }] }
+    send_books(books)
+  end
+
+  def send_books(books)
     if books.size > 20
       books.each_slice(books.size/20).to_a.each do |books_arr|
         respond_with :message, text: args.join(' ').capitalize, reply_markup: {
