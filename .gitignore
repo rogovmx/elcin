@@ -23,4 +23,7 @@ config/secrets.yml
 /public/*.jpg
 /public/*.jpeg
 /public/*.png
+/public/*.json
+/public/*.csv
+/public/*.fb2
 .DS_Store

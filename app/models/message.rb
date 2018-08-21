@@ -1,6 +1,7 @@
 class Message < ApplicationRecord
   require 'open-uri'
   require 'net/http'
+  require 'net/ftp'
   require 'uri'
   require 'nokogiri'
 
@@ -24,6 +25,10 @@ class Message < ApplicationRecord
       stroka = URI.encode(url)
       html = Net::HTTP.get(URI.parse(stroka))
       URI.extract(html).select { |l| l[/\.(?:jpe?g)\b/] }
+    end
+
+    def get_book(zapros)
+      Book.where("title ilike '%#{zapros.split.downcase}%'")
     end
 
     def get_audio(poisk)

@@ -107,6 +107,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     respond_with :message, text: t('.content')
   end
 
+  def book(*args)
+    books = Message.search_books(args)
+  end
+
   def pic(*args)
     image = Message.get_pic(args)
     Message.create(zapros: args.join(' '), href: image, data: "") unless image.nil?
