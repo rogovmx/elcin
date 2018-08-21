@@ -111,11 +111,14 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def book(*args)
     books = Book.where("title ilike '%#{args.join(' ').strip.downcase}%'")
                 .map { |a| [{ text: "#{find_book_author(a.author_id)} - #{a.title.capitalize}", callback_data: a.filename }] }
-    respond_with :message, text: args.join(' ').capitalize, reply_markup: {
-      inline_keyboard: books,
-      one_time_keyboard: true,
-      selective: true,
-    }
+
+    books.each_slice(books.size/10).to_a.each do |books_arr|
+      respond_with :message, text: args.join(' ').capitalize, reply_markup: {
+        inline_keyboard: books_arr,
+        one_time_keyboard: true,
+        selective: true,
+      }
+    end
   end
 
   def pic(*args)
