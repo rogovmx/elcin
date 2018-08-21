@@ -18,6 +18,7 @@
 
 spec/examples.txt
 config/secrets.yml
+db/schema.rb
 
 /public/songs/*.mp3
 /public/*.jpg
