@@ -110,7 +110,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def book(*args)
     books = Book.where("title ilike '%#{args.join(' ').strip.downcase}%'")
-                .map { |a| [{ text: "#{find_book_author(a.author_id)} - #{a.title.capitalize}", callback_data: a.filename }] }
+                .map { |a| [{ text: "#{find_book_author(a.author_id)} - #{a.title.capitalize}", callback_data: ["#{find_book_author(a.author_id)} - #{a.title.capitalize}", a.filename] }] }
 
     books.each_slice(books.size/10).to_a.each do |books_arr|
       respond_with :message, text: args.join(' ').capitalize, reply_markup: {
@@ -165,8 +165,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     respond_with :message, text: 'Отправляю...'
     ftp = Net::FTP.new('188.243.135.145')
     ftp.login
-    ftp.getbinaryfile("#{data}", "public/#{data}")
-    respond_with :document, document: File.open("public/#{data}")
+    ftp.getbinaryfile("#{data[1]}", "public/#{data[1]}")
+    respond_with :document, caption: data[0], document: File.open("public/#{data[1]}")
   end
 
   def message(message)
