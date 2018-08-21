@@ -122,20 +122,24 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def send_books(args, books)
-    if books.size > 30
-      books.each_slice(books.size/10).to_a.each do |books_arr|
+    if books.size >= 1
+      if books.size > 30
+        books.each_slice(books.size/10).to_a.each do |books_arr|
+          respond_with :message, text: args.join(' ').capitalize, reply_markup: {
+            inline_keyboard: books_arr,
+            one_time_keyboard: true,
+            selective: true,
+          }
+        end
+      else
         respond_with :message, text: args.join(' ').capitalize, reply_markup: {
-          inline_keyboard: books_arr,
-          one_time_keyboard: true,
-          selective: true,
-        }
+            inline_keyboard: books,
+            one_time_keyboard: true,
+            selective: true,
+          }
       end
     else
-      respond_with :message, text: args.join(' ').capitalize, reply_markup: {
-          inline_keyboard: books,
-          one_time_keyboard: true,
-          selective: true,
-        }
+      fuckup
     end
   end
 
@@ -178,8 +182,6 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def callback_query(data)
-    # return songs(data) if data.to_i.zero?
-    # song = Song.find(data)
     respond_with :message, text: 'Отправляю...'
     ftp = Net::FTP.new('188.243.135.145')
     ftp.login
