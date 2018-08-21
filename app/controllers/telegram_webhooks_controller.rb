@@ -1,4 +1,5 @@
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
+  require 'net/ftp'
   include Telegram::Bot::UpdatesController::MessageContext
   context_to_action!
 
@@ -108,7 +109,13 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def book(*args)
-    books = Message.search_books(args)
+    books = Book.where("title ilike '%#{zapros.split.downcase}%'")
+                .map { |a| [{ text: a.title, callback_data: a.filename }] }
+    respond_with :message, text: args.join(' ').capitalize, reply_markup: {
+      inline_keyboard: books,
+      one_time_keyboard: true,
+      selective: true,
+    }
   end
 
   def pic(*args)
@@ -150,13 +157,13 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def callback_query(data)
-    return songs(data) if data.to_i.zero?
-    song = Song.find(data)
+    # return songs(data) if data.to_i.zero?
+    # song = Song.find(data)
     respond_with :message, text: 'Отправляю...'
-    respond_with :audio, audio: File.open("public/songs/#{song.filename}"),
-                         caption: "#{song.author} - #{song.track}",
-                         performer: song.author,
-                         title: song.track
+    ftp = Net::FTP.new('188.243.135.145')
+    ftp.login
+    ftp.getbinaryfile("#{data}", 'public/#{data}')
+    respond_with :document, document: File.open("public/songs/#{data}")
   end
 
   def message(message)

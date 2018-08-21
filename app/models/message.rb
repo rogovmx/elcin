@@ -27,10 +27,6 @@ class Message < ApplicationRecord
       URI.extract(html).select { |l| l[/\.(?:jpe?g)\b/] }
     end
 
-    def get_book(zapros)
-      Book.where("title ilike '%#{zapros.split.downcase}%'")
-    end
-
     def get_audio(poisk)
       zapros = poisk.downcase.gsub(/[!?.,"\/\\]/, ' ').split(' ')
       url = ("https://mp3poisk.info/s/#{zapros.join('-')}")
