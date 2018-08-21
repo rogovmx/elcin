@@ -124,7 +124,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def send_books(args, books)
     if books.size > 20
       books.each_slice(books.size/20).to_a.each do |books_arr|
-        respond_with :message, text: args.join(' ').capitalize reply_markup: {
+        respond_with :message, text: args.join(' ').capitalize, reply_markup: {
           inline_keyboard: books_arr,
           one_time_keyboard: true,
           selective: true,
