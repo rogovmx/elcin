@@ -110,7 +110,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def book(*args)
     books = Book.where("title ilike '%#{args.join(' ').strip.downcase}%'")
-                .map { |a| [{ text: a.title, callback_data: a.filename }] }
+                .map { |a| [{ text: "#{find_book_author} - #{a.title.capitalize}", callback_data: a.filename }] }
     respond_with :message, text: args.join(' ').capitalize, reply_markup: {
       inline_keyboard: books,
       one_time_keyboard: true,
@@ -217,6 +217,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   private
+
+  def find_book_author(author_id)
+    author = Author.find(author_id)
+    "#{author.last_name.capitalize} #{author.first_name.capitalize} #{author.middle_name.capitalize}"
+  end
 
   def fuckup
     respond_with :message, text: 'Сорян, бро, ничего нет!'
