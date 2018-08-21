@@ -18,6 +18,8 @@
 
 spec/examples.txt
 config/secrets.yml
+config/*.sphinx.conf
+db/sphinx
 db/schema.rb
 
 /public/songs/*.mp3
