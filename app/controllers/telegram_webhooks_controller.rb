@@ -163,7 +163,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     ftp = Net::FTP.new('188.243.135.145')
     ftp.login
     ftp.getbinaryfile("#{data}", 'public/#{data}')
-    respond_with :document, document: File.open("public/songs/#{data}")
+    respond_with :document, document: File.open("public/#{data}")
   end
 
   def message(message)
