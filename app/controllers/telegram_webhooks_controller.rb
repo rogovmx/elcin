@@ -109,7 +109,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def book(*args)
-    books = Book.where("title ilike '%#{zapros.split.downcase}%'")
+    books = Book.where("title ilike '%#{args.join(' ').strip.downcase}%'")
                 .map { |a| [{ text: a.title, callback_data: a.filename }] }
     respond_with :message, text: args.join(' ').capitalize, reply_markup: {
       inline_keyboard: books,
