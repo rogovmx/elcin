@@ -121,6 +121,13 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     send_books(args, books)
   end
 
+  def test(*args)
+    query = args.join(' ').strip.downcase
+    contexts = "book"
+    books = ThinkingSphinx.search(query, classes: [contexts.singularize.classify.constantize])
+    send_books(args, books)
+  end
+
   def send_books(args, books)
     if books.size >= 1
       if books.size > 30
