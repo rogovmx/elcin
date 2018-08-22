@@ -110,40 +110,44 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def book(*args)
     books = Book.where("title ilike '%#{args.join(' ').strip.downcase}%'")
-                .map { |a| [{ text: "#{find_book_author(a.author_id)} - #{a.title.capitalize}", callback_data: a.filename }] }
+                .map { |a| [{ text: "#{find_book_author(a.author_id)} - #{a.title.capitalize}", callback_data: "book,#{a.filename}" }] }
 
-    send_books(args, books)
+    send_books(args.join(''), books)
   end
 
   def author(*args)
-    author = Author.where("search_name ilike '%#{args.join(' ').strip.downcase}%'").first
-    books = author.books.map { |a| [{ text: "#{author.last_name.capitalize} #{author.first_name.capitalize} #{author.middle_name.capitalize} - #{a.title.capitalize}", callback_data: a.filename }] }
-    send_books(args, books)
+    authors = Author.where("search_name ilike '%#{args.join(' ').strip.downcase}%'")
+                    .order(:first_name).to_a
+                    .map { |a| [{ text: "#{a.search_name}", callback_data: "author,#{a.id}" }] }
+
+    send_books(args.join(''), authors)
   end
 
-  def test(*args)
-    query = args.join(' ').strip.downcase
-    contexts = "book"
-    books = ThinkingSphinx.search(query, classes: [contexts.singularize.classify.constantize])
-    send_books(args, books)
+  def author_books(author_id)
+    author = Author.find(author_id.to_i)
+    author_name = "#{author.last_name.capitalize} #{author.first_name.capitalize} #{author.middle_name.capitalize}"
+    books = author.books
+                  .map { |a| [{ text: "#{author_name} - #{a.title.capitalize}", callback_data: "book,#{a.filename}" }] }
+
+    send_books(author_name, books)
   end
 
-  def send_books(args, books)
-    if books.size >= 1
-      if books.size > 30
-        books.each_slice(books.size/10).to_a.each do |books_arr|
-          respond_with :message, text: args.join(' ').capitalize, reply_markup: {
-            inline_keyboard: books_arr,
+  def send_books(title, data)
+    if data.size >= 1
+      if data.size > 30
+        data.each_slice(data.size/20).to_a.each do |data_arr|
+          respond_with :message, text: title.capitalize, reply_markup: {
+            inline_keyboard: data_arr,
             one_time_keyboard: true,
             selective: true,
           }
         end
       else
-        respond_with :message, text: args.join(' ').capitalize, reply_markup: {
-            inline_keyboard: books,
-            one_time_keyboard: true,
-            selective: true,
-          }
+        respond_with :message, text: title.capitalize, reply_markup: {
+          inline_keyboard: data,
+          one_time_keyboard: true,
+          selective: true,
+        }
       end
     else
       fuckup
@@ -157,43 +161,19 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     fuckup
   end
 
-  def mus(*args)
-    respond_with :message, text: 'Сорян, музыки пока не будет.'
-    # song = Song.get_audio(args.join(' '))
-    # return fuckup if song.nil?
-    # respond_with :audio, audio: File.open("public/songs/#{song.filename}"),
-    #                      caption: "#{song.author} - #{song.track}",
-    #                      performer: song.author,
-    #                      title: song.track
-  end
-
-  def songs(*args)
-    respond_with :message, text: 'Сорян, музыки пока не будет.'
-    # artists = Song.where(author: args.join(' ').downcase)
-    #               .map { |a| [{ text: a.track, callback_data: a.id }] }
-    # respond_with :message, text: args.join(' ').capitalize, reply_markup: {
-    #   inline_keyboard: artists,
-    #   one_time_keyboard: true,
-    #   selective: true,
-    # }
-  end
-
-  def art(*)
-    respond_with :message, text: 'Сорян, музыки пока не будет.'
-    # artists = Song.select(:author).uniq.map { |a| [{ text: a.author, callback_data: a.author }] }
-    # respond_with :message, text: 'Исполнители:', reply_markup: {
-    #   inline_keyboard: artists,
-    #   one_time_keyboard: true,
-    #   selective: true,
-    # }
-  end
-
   def callback_query(data)
-    respond_with :message, text: 'Отправляю...'
-    ftp = Net::FTP.new('188.243.135.145')
-    ftp.login
-    ftp.getbinaryfile("#{data}", "public/#{data}")
-    respond_with :document, document: File.open("public/#{data}")
+    new_data = data.split(',')
+    if new_data[0] == 'book'
+      respond_with :message, text: 'Отправляю...'
+      ftp = Net::FTP.new('188.243.135.145')
+      ftp.login
+      ftp.getbinaryfile("#{new_data[1]}", "public/#{new_data[1]}")
+      respond_with :document, document: File.open("public/#{new_data[1]}")
+    elsif new_data[0] == 'author'
+      author_books(new_data[1])
+    else
+      respond_with :message, text: 'Что-то явно пошло не так. Сорян.'
+    end
   end
 
   def message(message)
