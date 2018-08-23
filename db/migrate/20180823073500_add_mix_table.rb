@@ -1,6 +1,6 @@
 class AddMixTable < ActiveRecord::Migration[5.0]
   def change
-    create_table :mix do |t|
+    create_table :mixes do |t|
       t.string :author_name, null: false
       t.string :book_title, null: false
       t.string :search_field, null: false
