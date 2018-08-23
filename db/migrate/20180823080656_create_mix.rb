@@ -6,12 +6,11 @@ class CreateMix < ActiveRecord::Migration[5.0]
       t.string :search_field, null: false
     end
 
-    file = File.read(Rails.root.join('public', 'Author_List.json'))
-    data = JSON.parse(file)
+    File.open(Rails.root.join('public', 'Author_List.csv'), "r").each_line do |line|
+      data = line.split(';')
 
-    data.each do |b|
-      author = Author.find(b['AuthorID'].to_i)
-      book = Book.find(b['BookID'].to_i)
+      author = Author.find(data[0].to_i)
+      book = Book.find(data[1].to_i)
 
       Mix.create!(author_name: author.search_name.strip.downcase, book_title: book.title.strip.downcase, search_field: "#{author.search_name.strip.downcase} - #{book.title.strip.downcase}")
     end
