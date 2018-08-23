@@ -1,0 +1,2 @@
+class Mix < ApplicationRecord
+end
