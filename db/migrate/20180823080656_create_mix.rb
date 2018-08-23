@@ -1,4 +1,4 @@
-class AddMixTable < ActiveRecord::Migration[5.0]
+class CreateMix < ActiveRecord::Migration[5.0]
   def change
     create_table :mixes do |t|
       t.string :author_name, null: false
