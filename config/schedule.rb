@@ -21,11 +21,42 @@
 
 set :environment, 'development'
 
-every '0 9 25 3 *' do
+every '0 6 4 1 *' do
+  rake "elcin:sidorova_bd"
+end
+
+every '1 6 4 1 *' do
+  rake "elcin:misha_bd"
+end
+
+every '0 6 3 2 *' do
+  rake "elcin:dasha_bd"
+end
+
+every '0 6 11 3 *' do
+  rake "elcin:masha_bd"
+end
+
+every '0 6 25 3 *' do
   rake "elcin:anton_bd"
 end
 
+every '0 6 22 4 *' do
+  rake "elcin:dima_bd"
+end
 
-every '0 13 2 1 *' do
-  rake "elcin:test"
+every '0 6 10 8 *' do
+  rake "elcin:denis_bd"
+end
+
+every '0 6 18 8 *' do
+  rake "elcin:kraef_bd"
+end
+
+every '0 6 22 9 *' do
+  rake "elcin:vlad_bd"
+end
+
+every '0 6 7 12 *' do
+  rake "elcin:sereja_bd"
 end
