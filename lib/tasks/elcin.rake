@@ -1,6 +1,7 @@
 namespace :elcin do
   desc "TODO"
-  task quotes: :environment do
+  task test2: :environment do
+    TelegramWebhooksController.cooll('test2')
   end
 
 end
