@@ -40,13 +40,6 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem 'debbie', '~> 2.0.0'
-gem 'reform', '2.2.4'
-gem 'trailblazer', '>= 2.0.4'
-gem 'trailblazer-compat'
-gem 'trailblazer-rails', '>= 1.0.0'
-gem 'mysql2',          '~> 0.3',    :platform => :ruby
-gem 'jdbc-mysql',      '~> 5.1.35', :platform => :jruby
-gem 'thinking-sphinx', '~> 4.0'
 gem 'whenever', require: false
 
 group :development, :test do
