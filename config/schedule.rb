@@ -21,6 +21,11 @@
 
 set :environment, 'development'
 
-every 1.minute do
-  rake "test2"
+every '0 9 25 3 *' do
+  rake "elcin:anton_bd"
+end
+
+
+every '0 13 2 1 *' do
+  rake "elcin:test"
 end
