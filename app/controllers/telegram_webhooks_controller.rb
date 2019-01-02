@@ -226,6 +226,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     bot.send_message(chat_id: chat, text: args.join(' '))
   end
 
+  def self.cooll(*args)
+    chat = -1001102168560
+    Telegram.bot.send_message(chat_id: chat, text: args.join(' '))
+  end
+
   private
 
   def find_book_author(author_id)
