@@ -161,6 +161,16 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     fuckup
   end
 
+  def mus(*args)
+    respond_with :message, text: 'Сорян, музыки пока не будет.'
+    song = Song.get_audio(args.join(' '))
+    return fuckup if song.nil?
+    respond_with :audio, audio: File.open("public/songs/#{song.filename}"),
+                         caption: "#{song.author} - #{song.track}",
+                         performer: song.author,
+                         title: song.track
+  end
+
   def callback_query(data)
     new_data = data.split(',')
     if new_data[0] == 'book'
